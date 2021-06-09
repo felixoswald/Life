@@ -1,2 +1,5 @@
-﻿  CUserInterface.cpp
+﻿  CLife.cpp
+Y:\01_Studium\Semester 02\Programmierung II\Beleg\Life\Life\CLife.cpp(16,12): warning C4244: "Argument": Konvertierung von "time_t" in "unsigned int", möglicher Datenverlust
+  CUserInterface.cpp
+  Code wird generiert...
   Life.vcxproj -> Y:\01_Studium\Semester 02\Programmierung II\Beleg\Life\Debug\Life.exe

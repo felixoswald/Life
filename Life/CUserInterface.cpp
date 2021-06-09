@@ -26,6 +26,12 @@ void CUserInterface::printMenu() {
 				exit(0);
 			case 49:	//1
 				fflush(stdin);
+				life.calcRandomArray(25);
+				system("cls");
+				life.printCurrGen();
+				printf("--------------------------------------------------------------------------------------------------------------------\n");
+				life.calcNextGen();
+				life.printCurrGen();
 				break;
 			case 50:	//2
 				fflush(stdin);
