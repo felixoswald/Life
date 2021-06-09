@@ -16,8 +16,5 @@ int main() {
 	CUserInterface ui;
 	ui.printMenu();
 
-	printf("Testausgabe :) \n");
-
-
 	return 0;
 }

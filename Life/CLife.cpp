@@ -5,15 +5,8 @@
 #include <time.h>
 
 CLife::CLife() {
-	for (int y = 0; y < SIZEY; y++) {
-		for (int x = 0; x < SIZEX; x++) {
-			currgen[y][x] = NULL;
-			nextgen[y][x] = NULL;
-		}
-	}
-
-	// Zufalls Init
-	srand(time(NULL));
+	clearAll();
+	srand(time(NULL)); // Zufalls Init
 }
 CLife::~CLife() {
 
@@ -88,10 +81,65 @@ void CLife::printCurrGen() {
 	}
 }
 
+bool CLife::saveGen(char filename[]) {
+	try {
+		FILE* fp = fopen(filename, "wt");
+		if (fp != 0) throw -1; // Open Error handling
+	
+		for (int y = 0; y < SIZEY; y++) {
+			for (int x = 0; x < SIZEX; x++) {
+				fprintf(fp, "%c", currgen[y][x]);
+			}
+			fprintf(fp, "\n");
+		}
+		fclose(fp);
+	} catch (...) {
+		return false;
+	}
+	return true;
+}
+bool CLife::loadGen(char filename[]) {
+	try {
+		FILE* fp;
+		char curr = '.';
+		int x;
+
+		if ((fp = fopen(filename, "rt")) != 0) {
+			clearAll();
+			rewind(fp); // Filepointer an Anfang setzen
+
+			for (int y = 0; y < SIZEY; y++) {
+				x = 0;
+				while ((curr = fgetc(fp)) != EOF) {
+					if (curr == '\n') break;
+					if (x < SIZEX) {
+						currgen[y][x] = curr;
+						x += 1;
+					}
+				}
+			}
+			fclose(fp);
+		} else {
+			throw -1;
+		}
+	} catch (...) {
+		return false;
+	}
+	return true;
+}
+
 
 char CLife::calcZufallZelle(float percent) {
 	if (rand() >= 32767 * (percent / 100)) {
 		return ' ';
 	}
 	return '*';
+}
+void CLife::clearAll() {
+	for (int y = 0; y < SIZEY; y++) {
+		for (int x = 0; x < SIZEX; x++) {
+			currgen[y][x] = NULL;
+			nextgen[y][x] = NULL;
+		}
+	}
 }
