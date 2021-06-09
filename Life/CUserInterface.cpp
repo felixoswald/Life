@@ -20,7 +20,11 @@ void CUserInterface::printArray() {
 
 void CUserInterface::printMenu() {
 	while (1) {
-		printf("0 - Programm beenden\n1 - Array Random erstellen\n2 - Array mit Prozentangabe Random erstellen\n3 - Speicherst\204nde\n");
+		printf("0 - Programm beenden\n");
+		printf("1 - Array Random erstellen\n");
+		printf("2 - Array mit Prozentangabe Random erstellen\n");
+		printf("3 - Speicherst\204nde\n");
+
 		switch (_getch()) {
 			case 48:	//0
 				exit(0);
