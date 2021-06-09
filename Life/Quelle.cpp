@@ -14,7 +14,7 @@ using namespace std;
 
 int main() {
 	CUserInterface ui;
-	ui.printMenu();
+	ui.MainMenu();
 
 	return 0;
 }

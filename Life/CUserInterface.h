@@ -6,9 +6,10 @@ class CUserInterface {
 public:
 	CUserInterface();
 	~CUserInterface();
-	void printArray();
-	void printMenu();
+	void printArray(int generationen, int genpersec);
+	void MainMenu();
 
 private:
 	CLife life;
+	void gotoXY(int x, int y);
 };

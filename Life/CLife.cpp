@@ -107,7 +107,7 @@ bool CLife::loadGen(char filename[]) {
 		int x;
 
 		fopen_s(&fp, filename, "rt");
-		if (fp == 0) throw 0;
+		if (fp == 0) throw 0; // Open Error handling
 
 		clearAll();
 		rewind(fp); // Filepointer an Anfang setzen
