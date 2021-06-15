@@ -16,65 +16,116 @@ CUserInterface::~CUserInterface() {
 }
 
 void CUserInterface::printArray(int generationen, int genpersec) {
+	printf(" \n Gen: %d\n Gen per Sec: %d\n", generationen, genpersec);
+
+	for (int currgen = 1; currgen <= generationen; currgen++) {
+		system("cls");
+		printf("\n");
+		printf(" ************************************************************\n");
+		printf("                 Life - Generation %d von %d                \n", currgen, generationen);
+		printf(" ************************************************************\n\n");
+
+		life.printCurrGen();
+		life.calcNextGen();
+
+		if (genpersec == 0) { // schrittweise
+			_getch();
+		} else {
+			Sleep((1000 / genpersec));
+		}
+	}
 
 }
 
 void CUserInterface::MainMenu() {
-	int curr = 1;
-	int generationen = 0;
-	char schrittweise = ' ';
-	int genpersec = 0;
+	int curr= 1;
+	int generationen;
+	char schrittweise;
+	int genpersec;
+	int prozent;
+	int fileloop = 1;
 
 	while (1) {
+		generationen = -1;
+		schrittweise = '.';
+		genpersec = -1;
+		prozent = -1;
+
 		system("cls");
 		printf("\n");
 		printf(" ************************************************************\n");
-		printf(" *                     Life - Hauptmen\201                     *\n");
+		printf("                       Life - Hauptmen\201                     \n");
 		printf(" ************************************************************\n\n");
 		printf(" 0 - Programm beenden\n");
 		printf(" 1 - Zuf\204lliges Array erstellen\n");
-		printf(" 2 - Zuf\204lliges Array mit Prozentangabe erstellen\n");
-		printf(" 3 - Speicherst\204nde\n");
+		printf(" 2 - Speicherst\204nde\n");
 		gotoXY(1, 10);
 
 		switch (_getch()) {
 			case 48:	// 0 - Programm beenden
 				exit(0);
+				break;
 			case 49:	// 1 - Random Array
-				fflush(stdin);
-				life.calcRandomArray(25);
 				system("cls");
 
 				printf("\n");
 				printf(" ************************************************************\n");
-				printf(" *                  Life - Zuf\204lliges Array                 *\n");
+				printf("                    Life - Zuf\204lliges Array                 \n");
 				printf(" ************************************************************\n\n");
-				printf(" Anzahl der Generationen: ");
-				cin >> generationen;
-				if (!cin.good()) {
-					cin.clear();
+				
+				printf(" Anzahl der Generationen: \t  ");
+				if (!(cin >> generationen)) {
 					printf(" Wert als Integer angeben!\n");
+					cin.clear();
+					cin.ignore(1000000, '\n');
 					_getch();
 					break;
 				}
 
-				//generationen = _getch();
-				//printf("%d\n", generationen);
-				printf(" Schrittweise Abarbeitung? (J/N): ");
-				schrittweise = _getch();
-				printf("%c\n", schrittweise);
-				if (schrittweise == 'N' || schrittweise == 'n') {
-					printf(" \n Generationen pro Sekunde? (int): ");
-					genpersec = (int) _getch();
-					printf("%d\n", genpersec);
+				printf(" Prozentsatz lebende Zellen: \t  ");
+				if (!(cin >> prozent) || prozent > 100 || prozent < 0) {
+					printf(" Wert als Integer 0..100 angeben!\n");
+					cin.clear();
+					cin.ignore(1000000, '\n');
+					_getch();
+					break;
 				}
 
-				printArray(generationen, generationen);
+				printf(" Schrittweise Abarbeitung? (J/N): ");
+				if (!(cin >> schrittweise)) {
+					printf(" Nur J oder N angeben!\n");
+					cin.clear();
+					cin.ignore(1000000, '\n');
+					_getch();
+					break;
+				} else if (schrittweise == 'N' || schrittweise == 'n') {
+					printf(" Generationen pro Sekunde? (int): ");
+					if (!(cin >> genpersec) || genpersec <= 0) {
+						printf(" Wert als Integer > 0 angeben!\n");
+						cin.clear();
+						cin.ignore(1000000, '\n');
+						_getch();
+						break;
+					}
+				} else if (schrittweise == 'J' || schrittweise == 'j') {
+					genpersec = 0;
+				} else {
+					cin.clear();
+					cin.ignore(1000000, '\n');
+					printf(" Nur J oder N angeben!\n");
+					_getch();
+					break;
+				}
+
+				life.calcRandomArray(prozent);
+				printArray(generationen, genpersec);
+
+				printf(" \n Ende erreicht. Beliebige Taste um ins Hauptmen\201 zu kommen. ");
+				_getch();
 				break;
 			case 50:	//2
-				fflush(stdin);
-				break;
-			case 51:	//3
+				fileloop = 1;
+
 				system("cls");
 				printf("\033[93mHinweis:\033[0m Wenn das aktuelle Array gr\224\341er ist als das gespeicherte entstehen Leerstellen\nVorhandene Speicherst\204nde: (Mit Pfeiltasten navigieren, ESC - Men\201 verlassen)\n");
 
@@ -83,7 +134,7 @@ void CUserInterface::MainMenu() {
 				gotoXY(0, curr + 3);
 
 				
-				while (1) {
+				while (fileloop) {
 					switch (_getch()) {
 						case 72:	//pfeil hoch
 							if (curr > 1) {
@@ -103,6 +154,7 @@ void CUserInterface::MainMenu() {
 							break;
 						case 27:	//ESC
 							system("cls");
+							fileloop = 0;
 							break;
 						case 13:	//Enter
 							gotoXY(0, 5);

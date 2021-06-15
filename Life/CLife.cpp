@@ -15,8 +15,8 @@ CLife::~CLife() {
 void CLife::calcNextGen() {
 	int nachbarn = 0;
 
-	for (int y = 0; y < SIZEY; y++) {
-		for (int x = 0; x < SIZEX; x++) {
+	for (int y = 0; y < sizey; y++) {
+		for (int x = 0; x < sizex; x++) {
 			// Nachbarn für jederes Feld berechnen
 			nachbarn = 0;
 			if (y > 0 && x > 0) { // oben links
@@ -25,22 +25,22 @@ void CLife::calcNextGen() {
 			if (y > 0) { // oben mitte
 				if (currgen[y - 1][x] == '*') nachbarn++;
 			}
-			if (y > 0 && x < SIZEX) { // oben rechts
+			if (y > 0 && x < sizex-1) { // oben rechts
 				if (currgen[y - 1][x + 1] == '*') nachbarn++;
 			}
 			if (x > 0) { // mitte links
 				if (currgen[y][x - 1] == '*') nachbarn++;
 			}
-			if (x < SIZEX) { // mitte rechts
+			if (x < sizex-1) { // mitte rechts
 				if (currgen[y][x + 1] == '*') nachbarn++;
 			}
-			if (y < SIZEY && x > 0) { // unten links
+			if (y < sizey-1 && x > 0) { // unten links
 				if (currgen[y + 1][x - 1] == '*') nachbarn++;
 			}
-			if (y < SIZEY) { // unten mitte
+			if (y < sizey-1) { // unten mitte
 				if (currgen[y + 1][x] == '*') nachbarn++;
 			}
-			if (y < SIZEY && x < SIZEX) { // unten rechts
+			if (y < sizey-1 && x < sizex-1) { // unten rechts
 				if (currgen[y + 1][x + 1] == '*') nachbarn++;
 			}
 			
@@ -58,27 +58,30 @@ void CLife::calcNextGen() {
 	}
 
 	// Kopiere nextgen -> currgen
-	for (int y = 0; y < SIZEY; y++) {
-		for (int x = 0; x < SIZEX; x++) {
+	for (int y = 0; y < sizey; y++) {
+		for (int x = 0; x < sizex; x++) {
 			currgen[y][x] = nextgen[y][x];
 			nextgen[y][x] = 0;
 		}
 	}
 }
 void CLife::calcRandomArray(float percent) {
-	for (int y = 0; y < SIZEY; y++) {
-		for (int x = 0; x < SIZEX; x++) {
+	for (int y = 0; y < sizey; y++) {
+		for (int x = 0; x < sizex; x++) {
 			currgen[y][x] = calcZufallZelle(percent);
 		}
 	}
 }
 void CLife::printCurrGen() {
-	for (int y = 0; y < SIZEY; y++) {
-		for (int x = 0; x < SIZEX; x++) {
+	printf(" ------------------------------------------------------------------------------------------------------\n");
+	for (int y = 0; y < sizey; y++) {
+		printf(" |");
+		for (int x = 0; x < sizex; x++) {
 			printf("%c", currgen[y][x]);
 		}
-		printf("\n");
+		printf("|\n");
 	}
+	printf(" ------------------------------------------------------------------------------------------------------\n");
 }
 
 bool CLife::saveGen(char filename[]) {
@@ -88,8 +91,8 @@ bool CLife::saveGen(char filename[]) {
 		fopen_s(&fp, filename, "wt");
 		if (fp == 0) throw 0; // Open Error handling
 
-		for (int y = 0; y < SIZEY; y++) {
-			for (int x = 0; x < SIZEX; x++) {
+		for (int y = 0; y < sizey; y++) {
+			for (int x = 0; x < sizex; x++) {
 				fprintf(fp, "%c", currgen[y][x]);
 			}
 			fprintf(fp, "\n");
@@ -112,11 +115,11 @@ bool CLife::loadGen(char filename[]) {
 		clearAll();
 		rewind(fp); // Filepointer an Anfang setzen
 
-		for (int y = 0; y < SIZEY; y++) {
+		for (int y = 0; y < sizey; y++) {
 			x = 0;
 			while ((curr = fgetc(fp)) != EOF) {
 				if (curr == '\n') break;
-				if (x < SIZEX) {
+				if (x < sizex) {
 					currgen[y][x] = curr;
 					x += 1;
 				}
@@ -137,8 +140,8 @@ char CLife::calcZufallZelle(float percent) {
 	return '*';
 }
 void CLife::clearAll() {
-	for (int y = 0; y < SIZEY; y++) {
-		for (int x = 0; x < SIZEX; x++) {
+	for (int y = 0; y < sizey; y++) {
+		for (int x = 0; x < sizex; x++) {
 			currgen[y][x] = NULL;
 			nextgen[y][x] = NULL;
 		}

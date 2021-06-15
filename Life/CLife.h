@@ -1,9 +1,5 @@
 #pragma once
 
-
-#define SIZEY 20
-#define SIZEX 100
-
 class CLife {
 public:
 	CLife();
@@ -15,8 +11,10 @@ public:
 	bool loadGen(char filename[]);
 
 private:
-	char currgen[SIZEY][SIZEX];
-	char nextgen[SIZEY][SIZEX];
+	int sizex = 100;
+	int sizey = 20;
+	char currgen[20][100];
+	char nextgen[20][100];
 
 	char calcZufallZelle(float percent);
 	void clearAll();
