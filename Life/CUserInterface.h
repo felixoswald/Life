@@ -8,6 +8,8 @@ public:
 	~CUserInterface();
 	void printArray(int generationen, int genpersec);
 	void MainMenu();
+	void fileselectMenu();
+	void editMenu();
 
 private:
 	CLife life;

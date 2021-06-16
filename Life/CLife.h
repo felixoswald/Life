@@ -9,6 +9,9 @@ public:
 	void printCurrGen();
 	bool saveGen(char filename[]);
 	bool loadGen(char filename[]);
+	bool isCellAlive(int x, int y);
+	void CellKill(int x, int y);
+	void CellBeleben(int x, int y);
 
 private:
 	int sizex = 100;

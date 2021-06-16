@@ -132,6 +132,21 @@ bool CLife::loadGen(char filename[]) {
 	return true;
 }
 
+bool CLife::isCellAlive(int x, int y) {
+	if (currgen[y][x] == '*') {
+		return true;
+	}
+	return false;
+}
+
+void CLife::CellKill(int x, int y) {
+	currgen[y][x] = ' ';
+}
+
+void CLife::CellBeleben(int x, int y) {
+	currgen[y][x] = '*';
+}
+
 
 char CLife::calcZufallZelle(float percent) {
 	if (rand() >= 32767 * (percent / 100)) {

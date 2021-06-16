@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <iostream>
 #include <string>
+#include "dirent.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ void CUserInterface::printArray(int generationen, int genpersec) {
 		printf(" ************************************************************\n");
 		printf("                 Life - Generation %d von %d                \n", currgen, generationen);
 		printf(" ************************************************************\n\n");
+		if (genpersec == 0) printf(" [ENTER] n\204chste Generation\n\n");
 
 		life.printCurrGen();
 		life.calcNextGen();
@@ -43,7 +45,6 @@ void CUserInterface::MainMenu() {
 	char schrittweise;
 	int genpersec;
 	int prozent;
-	int fileloop = 1;
 
 	while (1) {
 		generationen = -1;
@@ -124,51 +125,165 @@ void CUserInterface::MainMenu() {
 				_getch();
 				break;
 			case 50:	//2
-				fileloop = 1;
-
-				system("cls");
-				printf("\033[93mHinweis:\033[0m Wenn das aktuelle Array gr\224\341er ist als das gespeicherte entstehen Leerstellen\nVorhandene Speicherst\204nde: (Mit Pfeiltasten navigieren, ESC - Men\201 verlassen)\n");
-
-				gotoXY(0, curr + 3);
-				printf(">");
-				gotoXY(0, curr + 3);
-
-				
-				while (fileloop) {
-					switch (_getch()) {
-						case 72:	//pfeil hoch
-							if (curr > 1) {
-								printf("\33[90m>\33[0m");
-								gotoXY(0, (--curr) + 3);
-								printf(">");
-								gotoXY(0, curr + 3);
-							}
-							break;
-						case 80:	//pfeil runter
-							if (curr < 5) {
-								printf("\33[90m>\33[0m");
-								gotoXY(0, (++curr) + 3);
-								printf(">");
-								gotoXY(0, curr + 3);
-							}
-							break;
-						case 27:	//ESC
-							system("cls");
-							fileloop = 0;
-							break;
-						case 13:	//Enter
-							gotoXY(0, 5);
-							break;
-						default:
-							break;
-					}
-				}
+				fileselectMenu();
 				break;
 			default:
 				system("cls");
 				break;
 		}
 	}
+}
+
+void CUserInterface::fileselectMenu() {
+	bool loop = true;
+	int auswahl = 0;
+	int auswahl_offset = 11;
+	int counter = 0;
+
+	system("cls");
+	printf("\n");
+	printf(" ************************************************************\n");
+	printf("                    Life - Speicherst\204nde                  \n");
+	printf(" ************************************************************\n\n");
+	printf(" [PFEILTASTEN]\tCursor bewegen\n [ENTER]\tDatei laden\n [N] \t\tNeue Datei anlegen\n [E] \t\tDatei bearbeiten\n [ESC]\t\tzur\201ck zum Hauptmen\201\n\n");
+
+	DIR* dir;
+	struct dirent* ent;
+	string ext = ".cfg";
+	string filename = "";
+
+	if ((dir = opendir(".")) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+			filename = ent->d_name;
+			if (filename.find(ext) != string::npos) {
+				printf(" > %s\n", ent->d_name);
+				counter++;
+			}
+		}
+		closedir(dir);
+	} else {
+		printf(" Fehler beim Lesen der Dateien!\n");
+	}
+
+	if (counter > 0) {
+		gotoXY(1, auswahl_offset);
+		while (loop) {
+			switch (_getch()) {
+				case 72:	//pfeil hoch
+					if (auswahl > 0) {
+						printf("\33[90m>\33[0m");
+						gotoXY(1, (--auswahl) + auswahl_offset);
+						printf(">");
+						gotoXY(1, auswahl + auswahl_offset);
+					}
+					break;
+				case 80:	//pfeil runter
+					if (auswahl < counter -1) {
+						printf("\33[90m>\33[0m");
+						gotoXY(1, (++auswahl) + auswahl_offset);
+						printf(">");
+						gotoXY(1, auswahl + auswahl_offset);
+					}
+					break;
+				case 27:	//ESC
+					system("cls");
+					loop = false;
+					break;
+				case 13:	//Enter
+					//gotoXY(0, 5);
+					life.calcRandomArray(50);
+					editMenu();
+					break;
+				default:
+					break;
+			}
+		}
+	} else {
+		printf(" Es wurden keine Speicherstände gefunden.\n");
+	}
+}
+
+void CUserInterface::editMenu() {
+	system("cls");
+	printf("\n");
+	printf(" ************************************************************\n");
+	printf("                      Life - Bearbeitung                      \n");
+	printf(" ************************************************************\n\n");
+	printf(" [PFEILTASTEN]\t Cursor bewegen\n [ENTER]\t Zustand Zelle umschalten\n [ESC]\t\t Bearbeitung beenden\n\n");
+
+	life.printCurrGen();
+
+	const int x_offset = 2;
+	const int y_offset = 10;
+	int x = 0;
+	int y = 0;
+	bool loop = true;
+
+
+	gotoXY(x_offset, y_offset);
+
+	while (loop) {
+		switch (_getch()) {
+			case 72:	//pfeil hoch
+				if (y > 0) {
+					y--;
+					gotoXY(x + x_offset, y + y_offset);
+				}
+				break;
+			case 80:	//pfeil runter
+				if (y < 19) {
+					y++;
+					gotoXY(x + x_offset, y + y_offset);
+				}
+				break;
+			case 75:	//pfeil links
+				if (x > 0) {
+					x--;
+					gotoXY(x + x_offset, y + y_offset);
+				}
+				break;
+			case 77:	//pfeil rechts
+				if (x < 99) {
+					x++;
+					gotoXY(x + x_offset, y + y_offset);
+				}
+				break;
+			case 27:	//ESC
+				system("cls");
+				printf("\n");
+				printf(" ************************************************************\n");
+				printf("                      Life - Bearbeitung                      \n");
+				printf(" ************************************************************\n\n");
+				printf(" Sollen die Änderungen in %s gespeichert werden?\n", "Test");
+				printf(" [ENTER]\tSpeichern & zur Dateiauswahl\n");
+				printf(" [ESC]\tohne Speichern beenden\n");
+				switch (_getch()) {
+					case 27: // ESC
+						fileselectMenu();
+						break;
+					case 13: // ENTER
+						// Speichern
+						life.saveGen((char*) "test.cfg");
+						fileselectMenu();
+						break;
+				}
+				loop = false;
+				break;
+			case 13:	//Enter
+				if (life.isCellAlive(x, y)) {
+					life.CellKill(x, y);
+					printf(" ");
+				} else {
+					life.CellBeleben(x, y);
+					printf("*");
+				}
+				gotoXY(x + x_offset, y + y_offset);
+				break;
+			default:
+				break;
+		}
+	}
+
 }
 
 void CUserInterface::gotoXY(int x, int y) {
