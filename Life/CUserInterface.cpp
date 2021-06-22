@@ -137,37 +137,45 @@ void CUserInterface::MainMenu() {
 void CUserInterface::fileselectMenu() {
 	bool loop = true;
 	int auswahl = 0;
-	int auswahl_offset = 11;
+	const int auswahl_offset = 11;
 	int counter = 0;
 
-	system("cls");
-	printf("\n");
-	printf(" ************************************************************\n");
-	printf("                    Life - Speicherst\204nde                  \n");
-	printf(" ************************************************************\n\n");
-	printf(" [PFEILTASTEN]\tCursor bewegen\n [ENTER]\tDatei laden\n [N] \t\tNeue Datei anlegen\n [E] \t\tDatei bearbeiten\n [ESC]\t\tzur\201ck zum Hauptmen\201\n\n");
+	while (loop) {
+		auswahl = counter = 0;
 
-	DIR* dir;
-	struct dirent* ent;
-	string ext = ".cfg";
-	string filename = "";
+		system("cls");
+		printf("\n");
+		printf(" ************************************************************\n");
+		printf("                    Life - Speicherst\204nde                  \n");
+		printf(" ************************************************************\n\n");
+		printf(" [PFEILTASTEN]\tCursor bewegen\n [ENTER]\tDatei laden\n [N] \t\tNeue Datei anlegen\n [E] \t\tDatei bearbeiten\n [ESC]\t\tzur\201ck zum Hauptmen\201\n\n");
 
-	if ((dir = opendir(".")) != NULL) {
-		while ((ent = readdir(dir)) != NULL) {
-			filename = ent->d_name;
-			if (filename.find(ext) != string::npos) {
-				printf(" > %s\n", ent->d_name);
-				counter++;
+		DIR* dir;
+		struct dirent* ent;
+		string ext = ".cfg";
+		string filename = "";
+		string dateien[100];
+
+		if ((dir = opendir(".")) != NULL) {
+			while ((ent = readdir(dir)) != NULL) {
+				if (counter < 100) {
+					filename = ent->d_name;
+					if (filename.find(ext) != string::npos) {
+						dateien[counter] = (string)ent->d_name;
+						printf(" > %s\n", dateien[counter].data());
+						counter++;
+					}
+				} else {
+					printf(" FEHLER! Maximale Dateianzahl liegt bei 100. \n");
+				}
 			}
+			closedir(dir);
+		} else {
+			printf(" Fehler beim Lesen der Dateien!\n");
 		}
-		closedir(dir);
-	} else {
-		printf(" Fehler beim Lesen der Dateien!\n");
-	}
 
-	if (counter > 0) {
-		gotoXY(1, auswahl_offset);
-		while (loop) {
+		if (counter > 0) {
+			gotoXY(1, auswahl_offset);
 			switch (_getch()) {
 				case 72:	//pfeil hoch
 					if (auswahl > 0) {
@@ -192,14 +200,24 @@ void CUserInterface::fileselectMenu() {
 				case 13:	//Enter
 					//gotoXY(0, 5);
 					life.calcRandomArray(50);
-					editMenu();
+					
+					break;
+				case 110: // N
+					break;
+				case 101: // E
+					printf("%s \n", dateien[auswahl].data());
+					if (life.loadGen((char*)dateien[auswahl].data())) {
+						editMenu();
+					} else {
+						printf(" Fehler beim laden der Datei!");
+					}
 					break;
 				default:
 					break;
 			}
+		} else {
+			printf(" Es wurden keine Speicherstände gefunden.\n");
 		}
-	} else {
-		printf(" Es wurden keine Speicherstände gefunden.\n");
 	}
 }
 
@@ -259,7 +277,8 @@ void CUserInterface::editMenu() {
 				printf(" [ESC]\tohne Speichern beenden\n");
 				switch (_getch()) {
 					case 27: // ESC
-						fileselectMenu();
+						//fileselectMenu();
+						loop = false;
 						break;
 					case 13: // ENTER
 						// Speichern
@@ -267,8 +286,6 @@ void CUserInterface::editMenu() {
 						fileselectMenu();
 						break;
 				}
-				loop = false;
-				break;
 			case 13:	//Enter
 				if (life.isCellAlive(x, y)) {
 					life.CellKill(x, y);
