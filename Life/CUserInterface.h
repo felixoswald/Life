@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CLife.h"
+#include <string>
 
 class CUserInterface {
 public:
@@ -9,9 +10,10 @@ public:
 	void printArray(int generationen, int genpersec);
 	void MainMenu();
 	void fileselectMenu();
-	void editMenu();
+	void editMenu(char filename[]);
 
 private:
 	CLife life;
 	void gotoXY(int x, int y);
+	void printHeader(std::string menuname, bool cls);
 };
