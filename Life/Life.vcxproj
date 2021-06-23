@@ -19,12 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CFileHandler.h" />
     <ClInclude Include="CLife.h" />
     <ClInclude Include="CUserInterface.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CFileHandler.cpp" />
     <ClCompile Include="CLife.cpp" />
     <ClCompile Include="CUserInterface.cpp" />
     <ClCompile Include="Quelle.cpp" />

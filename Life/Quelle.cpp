@@ -6,7 +6,6 @@
 #include <windows.h>
 
 #include "CLife.h"
-#include "CFileHandler.h"
 #include "CUserInterface.h"
 
 using namespace std;
