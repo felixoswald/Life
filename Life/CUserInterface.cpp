@@ -194,7 +194,9 @@ void CUserInterface::fileselectMenu() {
 						loop2 = false;
 						break;
 					case 110: // N
-					
+						life.calcRandomArray(60);
+						editMenu((char*)"");
+						loop2 = false;
 						break;
 					case 100: // D
 						if (remove((char*)dateien[auswahl].data()) == 0) {
@@ -273,8 +275,12 @@ void CUserInterface::editMenu(char filename[]) {
 				break;
 			case 27:	//ESC
 				printHeader("Bearbeitung", true);
-				printf(" Sollen die \216nderungen in %s gespeichert werden?\n", filename);
-				printf(" [ENTER]\tSpeichern & zur Dateiauswahl\n");
+				if (filename != "") {
+					printf(" Sollen die \216nderungen in %s gespeichert werden?\n", filename);
+					printf(" [ENTER]\tSpeichern & zur Dateiauswahl\n");
+				} else {
+					printf(" Sollen die \216nderungen in einer neuen Datei gespeichert werden?\n");
+				}
 				printf(" [N]\t\tSpeichern unter neuem Dateinamen\n");
 				printf(" [ESC]\t\tohne Speichern beenden\n ");
 				switch (_getch()) {
@@ -295,9 +301,13 @@ void CUserInterface::editMenu(char filename[]) {
 						loop = false;
 						break;
 					case 13: // ENTER
-						// Speichern
-						life.saveGen(filename);
-						loop = false;
+						if (filename != "") {
+							// Speichern
+							life.saveGen(filename);
+							loop = false;
+						}
+						break;
+					default:
 						break;
 				}
 			case 13:	//Enter
