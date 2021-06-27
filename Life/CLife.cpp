@@ -138,6 +138,15 @@ bool CLife::isCellAlive(int x, int y) {
 	return false;
 }
 
+bool CLife::isGameOver() {
+	for (int y = 0; y < sizey; y++) {
+		for (int x = 0; x < sizex; x++) {
+			if (currgen[y][x] == '*') return false;
+		}
+	}
+	return true;
+}
+
 void CLife::CellKill(int x, int y) {
 	currgen[y][x] = ' ';
 }

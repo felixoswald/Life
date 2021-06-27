@@ -10,6 +10,7 @@ public:
 	bool saveGen(char filename[]);
 	bool loadGen(char filename[]);
 	bool isCellAlive(int x, int y);
+	bool isGameOver();
 	void CellKill(int x, int y);
 	void CellBeleben(int x, int y);
 

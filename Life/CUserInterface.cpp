@@ -58,19 +58,27 @@ void CUserInterface::printArray(int generationen = -1, int genpersec = -1) {
 
 	for (int currgen = 1; currgen <= generationen; currgen++) {
 		printHeader("Generation " + to_string(currgen) + " von " + to_string(generationen), true);
-		if (genpersec == 0) printf(" [ENTER] n\204chste Generation\n\n");
-
-		life.printCurrGen();
-		life.calcNextGen();
-
-		if (genpersec == 0) { // schrittweise
-			_getch();
+		if (life.isGameOver()) {
+			currgen = generationen + 1;
 		} else {
-			Sleep((1000 / genpersec));
+			if (genpersec == 0) printf(" [ENTER] n\204chste Generation\n\n");
+
+			life.printCurrGen();
+			life.calcNextGen();
+
+			if (genpersec == 0) { // schrittweise
+				_getch();
+			} else {
+				Sleep((1000 / genpersec));
+			}
 		}
 	}
 
-	printf(" \n Ende erreicht. Beliebige Taste um zur\201ck ins Men\201 zu kommen. ");
+	if (life.isGameOver()) {
+		printf(" Game Over! Es gibt keine lebenden Zellen mehr.\n\n [ENTER] zur\201ck ins Men\201 ");
+	} else {
+		printf(" \n Ende erreicht. Beliebige Taste um zur\201ck ins Men\201 zu kommen. ");
+	}
 	_getch();
 }
 
